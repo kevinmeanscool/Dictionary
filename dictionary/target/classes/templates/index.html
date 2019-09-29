@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dictionary</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script language="javascript">
+        $(document).ready(function() {
+            //分类栏
+            $.ajax({
+                url:"/entry/EntryCategory",
+                method:"POST",
+                dataType:"json",
+                data:{},
+                success:function(result){
+                    //填充至类别选择
+                    for(var i = 0 ;i<result.length;$("#picker_list").append('<li>'+result[i]+'</li>'),i++);
+                }
+            });
+
+            /*	2nd example	*/
+
+            //获取menu子元素个数
+            var menu_items_length = $("#menu_ul").children('li').length;
+            //获取menu宽度
+            var menu_width = $("#menu2").width();
+            //计算item宽度
+            var menu_items_width = menu_width/menu_items_length;
+
+            //动态规划item宽度
+            $('a[id^=menu_items_a_]').width(menu_items_width);
+
+            //为item注册切换效果
+            $("#menu2 li a").wrapInner( '<span class="out" style="width: '+menu_items_width+'px"></span>' );
+
+            $("#menu2 li a").each(function() {
+                $( '<span class="over" style="width: '+menu_items_width+'px">' +  $(this).text() + '</span>' ).appendTo( this );
+            });
+
+            //指针移动至item上时，动画切换效果
+            $("#menu2 li a").hover(function() {
+                $(".out",	this).stop().animate({'top':	'40px','width':   menu_items_width+'px'},	300); // move down - hide
+                $(".over",	this).stop().animate({'top':	'0px'},		300); // move down - show
+
+            }, function() {
+                $(".out",	this).stop().animate({'top':	'0px'},		300); // move up - show
+                $(".over",	this).stop().animate({'top':	'-40px','width':   menu_items_width+'px'},	300); // move up - hide
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+<!--导航-begin-->
+<div id="menu2" class="menu">
+    <ul id="menu_ul">
+        <li><a id="menu_items_a_1" href="#">首　　页</a></li>
+        <li><a id="menu_items_a_2" href="#">编辑词条</a></li>
+        <li><a id="menu_items_a_3" href="#">浏览记录</a></li>
+    </ul>
+    <div class="cls"></div>
+</div>
+<!--导航-end-->
+<!--搜索栏-begin-->
+<div class="container">
+
+    <div class="logo" style="background-image: url(../img/logo.png)"></div>
+    <div style="height: 50px"></div>
+    <div class="input">
+        <input type="text" placeholder="请输入要搜索的内容" autocomplete="off" id="search-input">
+        <div class="picker" id="default_category">ALL</div>
+        <ul class="picker-list" id="picker_list">
+            <li>ALL</li>
+        </ul>
+        <div class="hot-list"></div>
+    </div>
+    <div class="search"></div>
+</div>
+<script src="../js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="../js/index.js"></script>
+<script type="text/javascript">
+    $(function () {
+        helangSearch.init();
+    })
+</script>
+<!--搜索栏-end-->
+</body>
+</html>
